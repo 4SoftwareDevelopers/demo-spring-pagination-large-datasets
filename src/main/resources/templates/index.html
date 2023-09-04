@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Paginación con Spring Boot y Thymeleaf</title>
+<!-- Añadir la hoja de estilos de Bootstrap 4 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+</head>
+<body>
+
+	<div class="container mt-4">
+		<h1>Datos de personas</h1>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Nombre</th>
+					<th>Apellido</th>
+					<th>Dirección</th>
+					<th>Teléfono</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item : ${page.content}">
+					<td th:text="${item.id}"></td>
+					<td th:text="${item.nombre}"></td>
+					<td th:text="${item.apellido}"></td>
+					<td th:text="${item.direccion}"></td>
+					<td th:text="${item.telefono}"></td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+		 Mostrando <span th:text="${page.size}"></span> de <span th:text="${page.totalElements}"></span> registros 
+		</p>
+		<nav aria-label="Page navigation"
+			class="d-flex justify-content-between">
+			<div>
+				<select id="pageSize" name="size" class="form-control" onchange="changePageSize()">
+					<option th:each="size : ${pageSizeOptions}" th:value="${size}"
+						th:text="${size}" th:selected="${page.size == size}"></option>
+				</select>
+			</div>
+			<ul class="pagination mb-0">
+				<li class="page-item"
+					th:classappend="${page.first} ? 'disabled' : ''"><a
+					class="page-link" th:href="@{'?page=0&size=' + ${page.size}}">Primera</a>
+				</li>
+				
+				<li class="page-item"
+					th:classappend="${page.first} ? 'disabled' : ''"><a
+					class="page-link" th:with="prevPage=${page.number - 1}"
+					th:href="@{'?page=' + ${prevPage} + '&size=' + ${page.size}}">Ant</a>
+				</li>
+				
+				<li class="page-item" th:each="i : ${pageNumbers}"
+					th:classappend="${i == page.number + 1} ? 'active' : ''"><a
+					class="page-link" th:with="pageNum=${i - 1}"
+					th:href="@{'?page=' + ${pageNum} + '&size=' + ${page.size}}"
+					th:text="${i}"></a>
+				</li>
+				
+				<li class="page-item"
+					th:classappend="${page.last} ? 'disabled' : ''"><a
+					class="page-link" th:with="nextPage=${page.number + 1}"
+					th:href="@{'?page=' + ${nextPage} + '&size=' + ${page.size}}">Sig</a>
+					
+				<li class="page-item"
+					th:classappend="${page.last} ? 'disabled' : ''"><a
+					class="page-link" th:with="lastPage=${page.totalPages - 1}"
+					th:href="@{'?page=' + ${lastPage} + '&size=' + ${page.size}}">Última</a>
+				</li>
+				
+			</ul>
+		</nav>
+	</div>
+	<script>
+		function changePageSize() {
+			const pageSize = document.getElementById("pageSize").value;
+			const currentPage = [[${page.number}]];
+			window.location.href = "?page="+currentPage + "&size=" + pageSize;
+		}
+	</script>
+	<!-- Añadir los scripts de Bootstrap 4 -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>
